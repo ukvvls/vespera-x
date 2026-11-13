@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#090d19">
+<title>Vespera — نظام اللاعب</title>
+<style>
+:root{--bg:#080c17;--panel:rgba(21,29,49,.72);--line:rgba(197,218,255,.13);--muted:#8e9bb6;--text:#edf3ff;--cyan:#79d9ff;--violet:#9b8cff;--mint:#83f0c3;--gold:#f3d28b;--danger:#ff8f9d}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;color:var(--text);font-family:Inter,"Segoe UI",Tahoma,Arial,sans-serif;background:radial-gradient(ellipse at 80% 0%,#1b2850 0,transparent 36%),radial-gradient(ellipse at 8% 55%,#172e43 0,transparent 32%),linear-gradient(135deg,#070b14,#0c1222 55%,#10162b);background-attachment:fixed}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.22;background-image:linear-gradient(rgba(143,178,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(143,178,255,.045) 1px,transparent 1px);background-size:44px 44px;mask-image:linear-gradient(to bottom,black,transparent 90%)}
+button,input,select{font:inherit}button{cursor:pointer;color:inherit}.shell{max-width:1400px;margin:auto;padding:26px 28px 50px;position:relative}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:26px}.brand{display:flex;align-items:center;gap:13px}.logo{width:42px;height:42px;border-radius:15px;background:linear-gradient(140deg,#a8eaff,#7774ff 65%,#a78bfa);box-shadow:0 0 35px #7774ff55;display:grid;place-items:center;color:#07101f;font-weight:900;font-size:20px}.brand h1{font-size:20px;letter-spacing:3px;margin:0}.brand small{display:block;color:var(--muted);letter-spacing:1.5px;font-size:9px;margin-top:4px}.top-actions{display:flex;align-items:center;gap:10px}.date-pill,.ghost{border:1px solid var(--line);background:rgba(255,255,255,.045);border-radius:14px;padding:10px 14px;color:#cbd7f0}.ghost:hover,.btn:hover{transform:translateY(-2px);filter:brightness(1.12)}
+.layout{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(280px,.85fr);gap:18px}.maincol,.sidecol{display:grid;gap:18px;align-content:start}
+.glass{background:linear-gradient(135deg,rgba(255,255,255,.085),rgba(255,255,255,.025)),var(--panel);border:1px solid var(--line);box-shadow:0 20px 60px #0004,inset 0 1px 0 #ffffff14;backdrop-filter:blur(18px) saturate(135%);-webkit-backdrop-filter:blur(18px) saturate(135%);border-radius:23px}
+.hero{padding:25px;position:relative;overflow:hidden}.hero:after{content:"";position:absolute;width:280px;height:280px;border-radius:50%;background:#7e81ff18;filter:blur(4px);left:-100px;top:-150px;pointer-events:none}.eyebrow{font-size:10px;color:var(--cyan);letter-spacing:2.5px;text-transform:uppercase}.hero-row{display:flex;align-items:center;justify-content:space-between;gap:20px;position:relative;z-index:1}.hero h2{font-size:clamp(25px,4vw,39px);margin:9px 0 7px;letter-spacing:-1px}.hero p{margin:0;color:var(--muted);font-size:13px}.rank-orb{width:104px;height:104px;flex:none;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 35% 25%,#d7f8ff55,transparent 35%),linear-gradient(145deg,#3e597d,#1c2d50 55%,#4a3d85);border:1px solid #c4eaff55;box-shadow:0 0 0 7px #8adfff0b,0 0 38px #7bcaff22,inset 0 0 22px #a5dfff2b}.rank-orb strong{font-size:37px;text-shadow:0 0 20px #9be8ff}.rank-orb span{display:block;text-align:center;font-size:9px;color:#d2e8ff;letter-spacing:2px;margin-top:-20px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:22px;position:relative;z-index:1}.stat{background:#08111f77;border:1px solid #c5dcff12;border-radius:15px;padding:12px}.stat label{font-size:10px;color:var(--muted)}.stat strong{display:block;font-size:22px;margin-top:5px}.stat em{font-style:normal;font-size:10px;color:var(--cyan)}
+.section-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:15px}.section-head h3{font-size:15px;margin:0}.section-head span{font-size:10px;color:var(--muted);letter-spacing:1px}.panel{padding:21px}.quest-list{display:grid;gap:9px}.quest{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px;padding:13px;border:1px solid #c6ddff13;background:#0b1425a8;border-radius:15px;transition:.22s}.quest.done{opacity:.62}.quest.done .qname{text-decoration:line-through;color:#a3b2c9}.check{width:23px;height:23px;border-radius:8px;border:1px solid #7790b6;background:#111e34;display:grid;place-items:center;color:#07121d}.quest.done .check{background:linear-gradient(135deg,var(--mint),var(--cyan));border-color:transparent}.qname{font-size:13px;font-weight:650}.qmeta{font-size:10px;color:var(--muted);margin-top:5px}.qright{display:flex;align-items:center;gap:8px}.grade{font-size:10px;padding:5px 8px;border-radius:8px;background:#8293b51c;color:#b9c9e6;border:1px solid #a8c6ef22}.delete{background:transparent;border:0;color:#72819e;font-size:17px;padding:4px}.delete:hover{color:var(--danger)}
+.addrow{display:flex;gap:8px;margin-top:13px}.field{min-width:0;flex:1;border:1px solid var(--line);border-radius:12px;background:#071020b8;color:var(--text);padding:12px 13px;outline:none}.field:focus{border-color:#7dd9ff88;box-shadow:0 0 0 3px #7dd9ff12}.btn{border:0;border-radius:12px;padding:11px 16px;background:linear-gradient(120deg,#85ddff,#9b8cff);color:#081326;font-weight:800;transition:.2s;box-shadow:0 8px 24px #7abfff20}.btn.secondary{background:#1c2a43;color:#dceaff;border:1px solid var(--line);box-shadow:none}.empty{color:var(--muted);font-size:12px;text-align:center;padding:24px}
+.week{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}.day{border:1px solid #d0e5ff14;border-radius:14px;background:#0a1424a6;padding:12px 7px;text-align:center;min-width:0}.day .dname{font-size:10px;color:var(--muted)}.day strong{display:block;font-size:20px;margin:9px 0 3px}.day small{font-size:9px;color:#9eb0cb}.bar{height:4px;border-radius:5px;background:#ffffff12;margin-top:10px;overflow:hidden}.bar i{display:block;height:100%;border-radius:5px;background:linear-gradient(90deg,var(--cyan),var(--violet))}
+.network{padding:20px;position:relative;overflow:hidden}.network svg{width:100%;height:auto;display:block;max-height:245px}.node{fill:#152b4c;stroke:#8fe4ff;stroke-width:1.4}.edge{stroke:#77d8ff55;stroke-width:1.2;stroke-dasharray:4 5}.node-text{fill:#e8f5ff;font-size:10px;text-anchor:middle}.network-note{font-size:10px;color:var(--muted);text-align:center;margin:5px 0 0}
+.profile-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}.profile-grid label{font-size:10px;color:var(--muted);display:grid;gap:6px}.profile-grid input{width:100%;min-width:0}.profile-actions{display:flex;justify-content:space-between;align-items:center;margin-top:12px;gap:8px}.tiny{font-size:10px;color:var(--muted);line-height:1.6}
+.training{display:grid;gap:9px}.train{display:flex;align-items:center;gap:11px;background:#0b1425a8;border:1px solid #c6ddff13;padding:11px;border-radius:13px}.train-icon{width:35px;height:35px;display:grid;place-items:center;border-radius:11px;background:#85dfff17;font-size:17px}.train strong{display:block;font-size:12px}.train small{font-size:10px;color:var(--muted)}.train button{margin-right:auto;border:1px solid #8ce8cf44;background:#8ce8cf12;color:#9af1d2;border-radius:9px;padding:7px 9px;font-size:10px}
+.notice{font-size:10px;color:#a9b8d2;line-height:1.7;border-top:1px solid var(--line);padding-top:11px;margin-top:12px}
+.toast{position:fixed;bottom:22px;left:50%;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:#d9f4ff;color:#071321;padding:11px 18px;border-radius:12px;font-size:12px;font-weight:700;transition:.3s;z-index:10}.toast.show{opacity:1;transform:translate(-50%,0)}
+footer{text-align:center;color:#66748f;font-size:10px;margin-top:25px;letter-spacing:1px}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.sidecol{grid-template-columns:repeat(2,minmax(0,1fr))}.network{grid-row:span 2}}
+@media(max-width:600px){.shell{padding:17px 13px 35px}.topbar{margin-bottom:17px}.date-pill{display:none}.hero{padding:19px}.rank-orb{width:80px;height:80px}.rank-orb strong{font-size:29px}.stats{grid-template-columns:repeat(2,1fr)}.panel{padding:16px}.sidecol{grid-template-columns:1fr}.network{grid-row:auto}.week{gap:5px}.day{padding:10px 3px}.day strong{font-size:16px}.addrow{flex-wrap:wrap}.addrow .field{flex-basis:100%}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
+@media(prefers-reduced-transparency:reduce){.glass{background:#121d31;border-color:#60718e}.quest,.day,.stat,.train{background:#111d31}}
+@media(forced-colors:active){.glass,.quest,.day,.stat,.train{border:1px solid CanvasText;backdrop-filter:none}}
+</style>
+</head>
+<body>
+<div class="shell">
+<header class="topbar">
+ <div class="brand"><div class="logo">V</div><div><h1>VESPERA</h1><small>PLAYER SYSTEM · DAILY PROTOCOL</small></div></div>
+ <div class="top-actions"><span class="date-pill" id="today"></span><button class="ghost" id="resetBtn">إعادة ضبط الأسبوع ↺</button></div>
+</header>
+<div class="layout">
+ <main class="maincol">
+  <section class="glass hero">
+   <div class="hero-row"><div><div class="eyebrow">SYSTEM ONLINE / PLAYER 001</div><h2>أهلاً بعودتك، أيها اللاعب.</h2><p>كل مهمة تنجزها هي خطوة جديدة في رحلتك.</p></div><div class="rank-orb"><div><strong id="rank">E</strong><span>YOUR RANK</span></div></div></div>
+   <div class="stats">
+    <div class="stat"><label>إجمالي XP</label><strong id="xp">0</strong><em>✦ نقاط الخبرة</em></div>
+    <div class="stat"><label>مهام مكتملة</label><strong id="completed">0</strong><em>من <span id="total">0</span> مهمة</em></div>
+    <div class="stat"><label>سلسلة الإنجاز</label><strong id="streak">0</strong><em>يوم متتالٍ</em></div>
+    <div class="stat"><label>نسبة الأسبوع</label><strong id="rate">0%</strong><em>معدل الإكمال</em></div>
+   </div>
+  </section>
+  <section class="glass panel">
+   <div class="section-head"><h3>◈ مهام اليوم | Daily Quests</h3><span id="dailyLabel">TODAY</span></div>
+   <div class="quest-list" id="questList"></div>
+   <div class="addrow"><input class="field" id="taskInput" maxlength="70" placeholder="اكتب مهمة جديدة..."><select class="field" id="taskRank" style="flex:0 0 90px"><option value="E">E · 10 XP</option><option value="D">D · 20 XP</option><option value="C">C · 30 XP</option><option value="B">B · 40 XP</option><option value="A">A · 50 XP</option><option value="S">S · 70 XP</option></select><button class="btn" id="addBtn">+ إضافة</button></div>
+  </section>
+  <section class="glass panel">
+   <div class="section-head"><h3>◈ سجل الأسبوع | Weekly Record</h3><span>7-DAY ANALYSIS</span></div>
+   <div class="week" id="week"></div>
+   <div class="notice">رتبتك الأسبوعية تعتمد على نسبة المهام التي أنجزتها من إجمالي المهام المسجلة خلال الأسبوع، وليس على عدد المهام وحده. أضف مهامك بواقعية؛ ويمكنك تعديلها حسب يومك.</div>
+  </section>
+ </main>
+ <aside class="sidecol">
+  <section class="glass network">
+   <div class="section-head"><h3>◈ شبكة اللاعب</h3><span>PLAYER ATTRIBUTES</span></div>
+   <svg viewBox="0 0 320 230" role="img" aria-label="شبكة تفاعلية لبيانات اللاعب">
+    <g class="edge"><path d="M160 110 L160 28 M160 110 L270 78 M160 110 L255 190 M160 110 L65 190 M160 110 L50 78"/></g>
+    <circle class="node" cx="160" cy="110" r="34"/><circle class="node" cx="160" cy="28" r="24"/><circle class="node" cx="270" cy="78" r="24"/><circle class="node" cx="255" cy="190" r="24"/><circle class="node" cx="65" cy="190" r="24"/><circle class="node" cx="50" cy="78" r="24"/>
+    <g class="node-text"><text x="160" y="108">PLAYER</text><text x="160" y="121">CORE</text><text id="nodeAge" x="160" y="31">AGE</text><text id="nodeHeight" x="270" y="81">HEIGHT</text><text id="nodeWeight" x="255" y="193">WEIGHT</text><text id="nodeXp" x="65" y="193">XP</text><text id="nodeRank" x="50" y="81">RANK</text></g>
+   </svg>
+   <p class="network-note">اضغط على حفظ البيانات لتحديث الشبكة.</p>
+   <div class="profile-grid" style="margin-top:15px">
+    <label>العمر<input class="field" id="age" type="number" min="13" max="19" placeholder="اختياري"></label>
+    <label>الطول (سم)<input class="field" id="height" type="number" min="100" max="230" placeholder="اختياري"></label>
+    <label>الوزن (كجم)<input class="field" id="weight" type="number" min="25" max="200" placeholder="اختياري"></label>
+    <label>اسم اللاعب<input class="field" id="playerName" maxlength="20" placeholder="Player 001"></label>
+   </div>
+   <div class="profile-actions"><span class="tiny">بياناتك محفوظة على هذا الجهاز فقط.</span><button class="btn secondary" id="saveProfile">حفظ البيانات</button></div>
+  </section>
+  <section class="glass panel">
+   <div class="section-head"><h3>◈ بروتوكول النشاط</h3><span>OPTIONAL</span></div>
+   <div class="training">
+    <div class="train"><div class="train-icon">↗</div><div><strong>تمارين ضغط</strong><small>مجموعة مريحة حسب قدرتك</small></div><button data-ex="تمارين الضغط">تم</button></div>
+    <div class="train"><div class="train-icon">⌁</div><div><strong>مشي / جري خفيف</strong><small>اختَر وتيرة مريحة</small></div><button data-ex="المشي أو الجري الخفيف">تم</button></div>
+    <div class="train"><div class="train-icon">⌇</div><div><strong>تمرين العقلة</strong><small>اختياري وبمساعدة آمنة عند الحاجة</small></div><button data-ex="تمرين العقلة">تم</button></div>
+    <div class="train"><div class="train-icon">◉</div><div><strong>بلانك</strong><small>مدة قصيرة ومريحة</small></div><button data-ex="تمرين البلانك">تم</button></div>
+   </div>
+   <div class="notice">النشاط اختياري: خذ أيام راحة، وتوقف عند الألم أو الدوخة. لا تحتاج لإكمال كل التمارين يومياً؛ اختر ما يناسبك بأمان.</div>
+  </section>
+ </aside>
+</div>
+<footer>VESPERA SYSTEM · YOUR PROGRESS, YOUR PACE</footer>
+</div>
+<div class="toast" id="toast" role="status"></div>
+<script>
+const $=id=>document.getElementById(id);
+const todayKey=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`};
+const dateOffset=(n)=>{const d=new Date();d.setDate(d.getDate()+n);return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`};
+const defaultState=()=>({tasks:[],profile:{},weekStart:dateOffset(-((new Date().getDay()+6)%7))});
+let state;try{state=JSON.parse(localStorage.getItem('vespera-v1'))||defaultState()}catch{state=defaultState()}
+if(!state.tasks)state.tasks=[];
+const save=()=>localStorage.setItem('vespera-v1',JSON.stringify(state));
+const xpMap={E:10,D:20,C:30,B:40,A:50,S:70};
+const rankFor=p=>p>=90?'S':p>=80?'A':p>=70?'B':p>=55?'C':p>=35?'D':'E';
+const toast=msg=>{ $('toast').textContent=msg;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),1800)};
+const dayNames=['الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت','الأحد'];
+const current=todayKey();
+$('today').textContent=new Intl.DateTimeFormat('ar-EG',{weekday:'long',day:'numeric',month:'long'}).format(new Date());
+$('dailyLabel').textContent=current;
+function render(){
+ const todays=state.tasks.filter(t=>t.date===current);
+ $('questList').innerHTML='';
+ if(!todays.length)$('questList').innerHTML='<div class="empty">لا توجد مهام بعد. أضف أول مهمة وابدأ يومك.</div>';
+ todays.forEach(t=>{
+  const el=document.createElement('div');el.className='quest'+(t.done?' done':'');
+  el.innerHTML=`<button class="check" aria-label="تغيير حالة المهمة">${t.done?'✓':''}</button><div><div class="qname"></div><div class="qmeta">مهمة يومية · ${xpMap[t.rank]||10} XP</div></div><div class="qright"><span class="grade">${t.rank}</span><button class="delete" aria-label="حذف المهمة">×</button></div>`;
+  el.querySelector('.qname').textContent=t.name;
+  el.querySelector('.check').onclick=()=>{t.done=!t.done;save();render();toast(t.done?'تم تسجيل الإنجاز +'+xpMap[t.rank]+' XP':'تم تحديث المهمة')};
+  el.querySelector('.delete').onclick=()=>{state.tasks=state.tasks.filter(x=>x.id!==t.id);save();render()};
+  $('questList').append(el);
+ });
+ const weekStart=new Date(state.weekStart+'T12:00:00');
+ const days=Array.from({length:7},(_,i)=>{let d=new Date(weekStart);d.setDate(d.getDate()+i);return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`});
+ const weekTasks=state.tasks.filter(t=>days.includes(t.date)),done=weekTasks.filter(t=>t.done).length,rate=weekTasks.length?Math.round(done/weekTasks.length*100):0;
+ $('completed').textContent=done;$('total').textContent=weekTasks.length;$('rate').textContent=rate+'%';$('rank').textContent=rankFor(rate);
+ $('xp').textContent=state.tasks.filter(t=>t.done&&days.includes(t.date)).reduce((s,t)=>s+(xpMap[t.rank]||10),0);
+ let streak=0;for(let i=0;i<7;i++){const key=dateOffset(-i);if(state.tasks.some(t=>t.date===key&&t.done))streak++;else break}
+ $('streak').textContent=streak;
+ $('nodeAge').textContent=state.profile?.age||'AGE';$('nodeHeight').textContent=state.profile?.height?state.profile.height+'cm':'HEIGHT';$('nodeWeight').textContent=state.profile?.weight?state.profile.weight+'kg':'WEIGHT';$('nodeXp').textContent=$('xp').textContent+' XP';$('nodeRank').textContent=$('rank').textContent+' RANK';
+ $('week').innerHTML='';
+ days.forEach((day,i)=>{const ts=state.tasks.filter(t=>t.date===day),dn=ts.filter(t=>t.done).length,p=ts.length?Math.round(dn/ts.length*100):0;const el=document.createElement('div');el.className='day';el.innerHTML=`<div class="dname">${dayNames[i]}</div><strong>${dn}/${ts.length}</strong><small>${ts.length?p+'%':'—'}</small><div class="bar"><i style="width:${p}%"></i></div>`;$('week').append(el)});
+}
+function addTask(name,rank,day=current){state.tasks.push({id:Date.now()+Math.random(),name,rank,date:day,done:false});save();render()}
+$('addBtn').onclick=()=>{const name=$('taskInput').value.trim();if(!name){toast('اكتب اسم المهمة أولاً');return}addTask(name,$('taskRank').value);$('taskInput').value='';toast('تمت إضافة المهمة')};
+$('taskInput').addEventListener('keydown',e=>{if(e.key==='Enter')$('addBtn').click()});
+$('saveProfile').onclick=()=>{state.profile={age:$('age').value,height:$('height').value,weight:$('weight').value,name:$('playerName').value};save();toast('تم حفظ بيانات اللاعب')};
+['age','height','weight','playerName'].forEach(k=>$(k).value=state.profile?.[k]||'');
+document.querySelectorAll('[data-ex]').forEach(b=>b.onclick=()=>{addTask(b.dataset.ex,'E');toast('أُضيفت كـ مهمة اختيارية لليوم')});
+$('resetBtn').onclick=()=>{if(confirm('هل تريد بدء أسبوع جديد؟ ستظل مهامك السابقة محفوظة، وسيتم إنشاء أسبوع جديد من اليوم.')){state.weekStart=dateOffset(-((new Date().getDay()+6)%7));save();render();toast('تم بدء أسبوع جديد')}};
+render();
+</script>
+</body></html>
